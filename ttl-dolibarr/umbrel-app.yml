@@ -1,0 +1,26 @@
+manifestVersion: 1
+id: ttl-dolibarr
+name: Dolibarr
+tagline: Dolibarr is a modern software package to manage your organization's activity
+icon: https://svgur.com/i/mvA.svg
+category: Development
+version: "1.0.0"
+port: 4545
+description: >-
+  Dolibarr ERP CRM is a modern software package to manage your company or foundation's activity
+  (contacts, suppliers, invoices, orders, stocks, agenda, accounting, ...).
+  
+  It's an open source Web application (written in PHP) designed for businesses of any sizes, 
+  foundations and freelancers.
+developer: Dolibarr
+website: https://github.com/thetestlabs/umbrel-community-app-store
+submitter: thetestlabs
+submission: https://github.com/thetestlabs/umbrel-community-app-store
+repo: https://github.com/thetestlabs/umbrel-community-app-store
+support: https://github.com/thetestlabs/umbrel-community-app-store
+gallery:
+releaseNotes:
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
