@@ -1,53 +1,44 @@
-version: "0.1.0"
-
+version: '3.7'
 services:
-    mariadb:
-        image: mariadb:latest
-        environment:
-            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
-            MYSQL_DATABASE: ${MYSQL_DATABASE:-dolidb}
-            MYSQL_USER: ${MYSQL_USER:-dolidbuser}
-            MYSQL_PASSWORD: ${MYSQL_PASSWORD:-dolidbpass}
 
-        volumes:
-            - /home/dolibarr_mariadb:/var/lib/mysql
+  app:
+    image: dolibarr/dolibarr:21.0.4@sha256:26f0bfd5d62ecadd08a8dfd9402c3d4becf4068b991407b0c335c182b8a1ed10
+    environment:
+      DOLI_INIT_DEMO: ${DOLI_INIT_DEMO:-0}
+      DOLI_DB_HOST: ${DOLI_DB_HOST:-mariadb}
+      DOLI_DB_NAME: ${DOLI_DB_NAME:-dolidb}
+      DOLI_DB_USER: ${DOLI_DB_USER:-dolidbuser}
+      DOLI_DB_PASSWORD: ${DOLI_DB_PASSWORD:-dolidbpass}
+      DOLI_URL_ROOT: ${DOLI_URL_ROOT:-http://0.0.0.0}
+      DOLI_ADMIN_LOGIN: ${DOLI_ADMIN_LOGIN:-admin}
+      DOLI_ADMIN_PASSWORD: ${DOLI_ADMIN_PASSWORD:-admin}
+      DOLI_CRON: ${DOLI_CRON:-0}
+      DOLI_CRON_KEY: ${DOLI_CRON_KEY:-mycronsecurekey}
+      DOLI_COMPANY_NAME: ${DOLI_COMPANY_NAME:-MyBigCompany}
+      WWW_USER_ID: ${WWW_USER_ID:-1000}
+      WWW_GROUP_ID: ${WWW_GROUP_ID:-1000}
+    restart: on-failure
+    stop_grace_period: 1m
+    ports:
+      - '4545:80'
+    links:
+      - mariadb
+    volumes:
+      - ${APP_DATA_DIR}/home/dolibarr_documents:/var/www/documents
+      - ${APP_DATA_DIR}/home/dolibarr_custom:/var/www/html/custom
+    container_name: ttl-dolibarr_web_1
+    depends_on:
+      - db
 
-    app_proxy:
-      environment:
-        # The format here is: <app-id>_<docker-service-name>_1
-        APP_HOST: ttl-dolibarr_server_1
-        APP_PORT: 4545
-
-    server:
-      image: getumbrel/community-app-store-hello-world:latest
-      user: "1000:1000"
-      init: true
-
-    web:
-        # Choose the version of image to install
-        # dolibarr/dolibarr:latest (the latest stable version)
-        # dolibarr/dolibarr:develop
-        # dolibarr/dolibarr:x.y.z
-        image: dolibarr/dolibarr:latest
-        environment:
-            DOLI_INIT_DEMO: ${DOLI_INIT_DEMO:-0}
-            DOLI_DB_HOST: ${DOLI_DB_HOST:-mariadb}
-            DOLI_DB_NAME: ${DOLI_DB_NAME:-dolidb}
-            DOLI_DB_USER: ${DOLI_DB_USER:-dolidbuser}
-            DOLI_DB_PASSWORD: ${DOLI_DB_PASSWORD:-dolidbpass}
-            DOLI_URL_ROOT: "${DOLI_URL_ROOT:-http://0.0.0.0}"
-            DOLI_ADMIN_LOGIN: "${DOLI_ADMIN_LOGIN:-admin}"
-            DOLI_ADMIN_PASSWORD: "${DOLI_ADMIN_PASSWORD:-admin}"
-            DOLI_CRON: ${DOLI_CRON:-0}
-            DOLI_CRON_KEY: ${DOLI_CRON_KEY:-mycronsecurekey}
-            DOLI_COMPANY_NAME: ${DOLI_COMPANY_NAME:-MyBigCompany}
-            WWW_USER_ID: ${WWW_USER_ID:-1000}
-            WWW_GROUP_ID: ${WWW_GROUP_ID:-1000}
-
-        ports:
-            - "4545:80"
-        links:
-            - mariadb
-        volumes:
-            - /home/dolibarr_documents:/var/www/documents
-            - /home/dolibarr_custom:/var/www/html/custom
+  db:
+    image: mariadb:lts-ubi9@sha256:c8d856072d584064f5dbeb1219782c1d23a8fc64f68288c02581752d3167f1df
+    restart: on-failure
+    stop_grace_period: 1m
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-dolidb}
+      MYSQL_USER: ${MYSQL_USER:-dolidbuser}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-dolidbpass}
+    volumes:
+      - ${APP_DATA_DIR}/home/dolibarr_mariadb:/var/lib/mysql
+    container_name: ttl-dolibarr_mariadb_1
