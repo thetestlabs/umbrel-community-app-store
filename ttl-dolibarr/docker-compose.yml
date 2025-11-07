@@ -1,4 +1,3 @@
-version: '3.7'
 services:
 
   app:
@@ -21,8 +20,6 @@ services:
     stop_grace_period: 1m
     ports:
       - '4545:80'
-    links:
-      - mariadb
     volumes:
       - ${APP_DATA_DIR}/home/dolibarr_documents:/var/www/documents
       - ${APP_DATA_DIR}/home/dolibarr_custom:/var/www/html/custom
